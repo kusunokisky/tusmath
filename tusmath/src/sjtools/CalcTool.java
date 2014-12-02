@@ -13,6 +13,10 @@ public class CalcTool {
 	 * @param x
 	 */
 	static void printVec(double x[]){
+		if(x == null){
+			System.out.println("不正な値です");
+			return;
+		}
 		for(int i = 0; i < x.length;i++){
 			System.out.print(x[i] + " ");
 		}
@@ -23,6 +27,10 @@ public class CalcTool {
 	 * @param a
 	 */
 	static void printMat(double a[][]){
+		if(a == null){
+			System.out.println("不正な値です");
+			return;
+		}
 		for(int i = 0; i < a.length;i++){
 			for(int j = 0; j < a[i].length;j++){
 				System.out.print(a[i][j] + " ");

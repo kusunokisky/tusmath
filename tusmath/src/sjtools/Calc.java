@@ -14,11 +14,13 @@ public class Calc {
 	}
 	/**
 	 * ベクトルxをスカラーc倍する
-	 * @param c
-	 * @param x
-	 * @return
+	 * @param c スカラー
+	 * @param x ベクトル行列(1次元配列)
+	 * @return 	スカラー倍されたベクトル行列<br/>
+	 * 			第二引数がnullの場合はnull
 	 */
 	static double[] scalarMultiple(double c,double x[]){
+		if(x == null)return null;
 		double x_[] = x;
 		for(int i = 0;i < x_.length ; i++){
 			x_[i] = c * x_[i];
@@ -27,11 +29,13 @@ public class Calc {
 	}
 	/**
 	 * ベクトル同士の加算(x+y)を計算する
-	 * @param x
-	 * @param y
-	 * @return
+	 * @param x ベクトル行列(1次元配列)
+	 * @param y ベクトル行列(1次元配列)
+	 * @return 	加算されたベクトル<br/>
+	 * 			第一引数もしくは第二引数がnullの場合null
 	 */
 	static double[] addVec(double x[],double y[]){
+		if(x == null || y== null)return null;
 		if(x.length != y.length)throw new UnsupportedOperationException("第一引数と第二引数の配列の長さが異なるため");
 		double result[] = new double[x.length];
 		for(int i = 0;i<result.length;i++){
@@ -41,11 +45,13 @@ public class Calc {
 	}
 	/**
 	 *  ベクトル同士の減算(x-y)を計算する
-	 * @param x
-	 * @param y
-	 * @return
+	 * @param x ベクトル行列(1次元配列)
+	 * @param y ベクトル行列(1次元配列)
+	 * @return 	減算されたベクトル<br/>
+	 * 			第一引数もしくは第二引数がnullの場合null
 	 */
 	static double[] subVec(double x[],double y[]){
+		if(x == null || y== null)return null;
 		if(x.length != y.length)throw new UnsupportedOperationException("第一引数と第二引数の配列の長さが異なるため");
 		double result[] = new double[x.length];
 		for(int i = 0;i<result.length;i++){
@@ -55,9 +61,11 @@ public class Calc {
 	}
 	/**
 	 *  ベクトル同士の内積(x, y)を計算する
-	 * @param x
-	 * @param y
-	 * @return
+	 * @param x ベクトル行列(1次元配列)
+	 * @param y ベクトル行列(1次元配列)
+	 * @return 	内積の値
+	 * @throws UnsupportedOperationException 配列の長さが異なるとき<br/>
+	 * 										 
 	 */
 	static double innProb(double x[],double y[]){
 		if(x.length != y.length)throw new UnsupportedOperationException();

@@ -18,10 +18,10 @@ public class Start {
 						 {4,-2,4}};
 		double[] b_ = {1,1,1};
 		double[] x_ = {10,10,0};
-		NumericalData sordata = new NumericalData(a, b);
+		NumericalData sordata = new NumericalData(a_, b_);
 		sordata.setEps(1.0E-10);
 		sordata.setMaxN(100);
-		sordata.setInitX(x);
+		sordata.setInitX(x_);
 		sordata.setCon(Convergence.RELATIVEERROR);
 		sordata.setNorm(Norm.INFINITY);
 		CalcTool.printVec(CalcNumerical.jacobi(sordata));

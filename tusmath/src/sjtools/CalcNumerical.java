@@ -426,7 +426,10 @@ public class CalcNumerical{
 			}
 			count++;
 			
-			if(count > data.getMaxN() )break;
+			if(count > data.getMaxN() ){
+				System.out.println("収束しない");
+				return new double[0];
+			}
 			
 			switch (data.getCon()) {
 			case ERROR:
@@ -477,7 +480,7 @@ public class CalcNumerical{
 			
 			if(count > data.getMaxN() ){
 				System.out.println("収束しない");
-				break;
+				return new double[0];
 			
 			}
 			switch (data.getCon()) {
@@ -530,10 +533,9 @@ public class CalcNumerical{
 			}
 			count++;
 			
-			if(count > data.getMaxN() ){
-				
+			if( count > data.getMaxN() ){
 				System.out.println("収束しない");
-				break;
+				return new double[0];
 			
 			}
 			
