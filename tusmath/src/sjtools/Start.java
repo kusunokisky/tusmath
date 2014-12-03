@@ -1,7 +1,5 @@
 package sjtools;
 
-import sjtools.CalcNumerical.Convergence;
-import sjtools.CalcNumerical.Norm;
 
 
 public class Start {
@@ -19,16 +17,24 @@ public class Start {
 		double[] b_ = {1,1,1};
 		double[] x_ = {10,10,0};
 		NumericalData sordata = new NumericalData(a_, b_);
-		sordata.setEps(1.0E-10);
-		sordata.setMaxN(100);
-		sordata.setInitX(x_);
-		sordata.setCon(Convergence.RELATIVEERROR);
-		sordata.setNorm(Norm.INFINITY);
-		CalcTool.printVec(CalcNumerical.jacobi(sordata));
-		CalcTool.printVec(CalcNumerical.gaussSeidel(sordata));
-		System.out.println("SOR法");
-		CalcTool.printVec(CalcNumerical.sor(sordata,1.0));
-		
+		double[][] ta = new double[20][20];
+		int g = 100;
+		for(int i = 0;i < ta.length;i++){
+			for(int j = 0; j < ta[i].length;j++){
+				if(i == j){
+					ta[i][j] = 2;
+				}else if((i-1) == j){
+					ta[i][j] = g;
+				}else if((i+1) == j){
+					ta[i][j] = 1;
+				}else{
+					ta[i][j] = 0;
+				}
+			}
+		}
+		CalcTool.printMat(CalcNumerical.inverse(ta));
+		System.out.println(Calc.matNorm1(ta));
+		System.out.println(Calc.matNorm1(ta)*Calc.matNorm1(CalcNumerical.inverse(ta)));
 	}
 	
 }

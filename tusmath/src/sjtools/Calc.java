@@ -234,17 +234,17 @@ public class Calc {
 	/**
 	 *最大列和
 	 */
-	static double matNorm1(double a[][]){
+	static double matNorm1(double x[][]){
 		//最初の列を追加
 		double result = 0;
-		for(int i = 0;i < a.length;i++){
-			result += a[i][0];
+		for(int i = 0;i < x.length;i++){
+			result += Math.abs(x[i][0]);
 		}
 		//残りの列を判定していく
-		for(int i = 1; i < a[0].length;i++){
+		for(int i = 1; i < x[0].length;i++){
 			double sum = 0;
-			for(int j = 0;j < a.length;j++){
-				sum += a[j][i];
+			for(int j = 0;j < x.length;j++){
+				sum += Math.abs(x[j][i]);
 			}
 			if(result < sum){
 				result = sum;

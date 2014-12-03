@@ -412,11 +412,12 @@ public class CalcNumerical{
 		double[] b = Arrays.copyOf(data.getB(), data.getB().length);
 		double[] dep = Arrays.copyOf(data.getInitX(), data.getInitX().length);
 		double[] result = new double[dep.length];
+		double sum;
 		int count = 0;
 		outside:
 		while(true){
 			for(int i = 0;i < result.length;i++){
-				double sum = 0;
+				sum = 0;
 				for(int j = 0;j < result.length;j++){
 					if(i != j){
 						sum += a[i][j]*dep[j];
@@ -457,16 +458,23 @@ public class CalcNumerical{
 		}
 		return result;
 	}
+	/**
+	 * ガウス・ザイデル法により解ベクトルを求める
+	 * @param data
+	 * @return
+	 */
 	static double[] gaussSeidel(NumericalData data){
 		double[][] a = CalcTool.arrayCopy(data.getA());
 		double[] b = Arrays.copyOf(data.getB(), data.getB().length);
 		double[] dep = Arrays.copyOf(data.getInitX(), data.getInitX().length);
 		double[] result = new double[dep.length];
+		double sum;
 		int count = 0;
 		outside:
 		while(true){
 			for(int i = 0;i < result.length;i++){
-				double sum = 0;
+				sum = 0;
+				
 				for(int j = 0;j < result.length;j++){
 					if(j < i){
 						sum += a[i][j] * result[j];
@@ -514,11 +522,13 @@ public class CalcNumerical{
 		double[] b = Arrays.copyOf(data.getB(), data.getB().length);
 		double[] dep = Arrays.copyOf(data.getInitX(), data.getInitX().length);
 		double[] result = new double[dep.length];
+		double sum;
 		int count = 0;
 		outside:
 		while(true){
 			for(int i = 0;i < result.length;i++){
-				double sum = 0;
+				sum = 0;
+				
 				for(int j = 0;j < result.length;j++){
 					if(j < i){
 						sum += a[i][j] * result[j];
