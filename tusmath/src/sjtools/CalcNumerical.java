@@ -414,7 +414,6 @@ public class CalcNumerical{
 		double[] result = new double[dep.length];
 		double sum;
 		int count = 0;
-		outside:
 		while(true){
 			for(int i = 0;i < result.length;i++){
 				sum = 0;
@@ -426,30 +425,10 @@ public class CalcNumerical{
 				result[i] = (b[i] - sum)/a[i][i];
 			}
 			count++;
-			
+			if(CalcTool.checkConvergence(data, result, dep))break;
 			if(count > data.getMaxN() ){
 				System.out.println("収束しない");
 				return new double[0];
-			}
-			
-			switch (data.getCon()) {
-			case ERROR:
-				if(Calc.vecNorm(Calc.subVec(result, dep), data.getNorm()) < data.getEps()){
-					break outside;
-				}
-			case RESIDUAL:
-				if(Calc.vecNorm(Calc.residual(a, result, b), data.getNorm()) < data.getEps()){
-					break outside;
-				}
-			case RELATIVEERROR:
-				if(Calc.vecNorm(Calc.subVec(result, dep), data.getNorm()) / Calc.vecNorm(result, data.getNorm()) < data.getEps()){
-					break outside;
-				}
-			case RELATIVERESIDUAL:
-				if(Calc.vecNorm(Calc.residual(a, result, b), data.getNorm()) / Calc.vecNorm(b, data.getNorm()) < data.getEps()){
-					break outside;
-				}
-			default:
 			}
 
 			for(int i = 0;i < result.length;i++){
@@ -470,11 +449,10 @@ public class CalcNumerical{
 		double[] result = new double[dep.length];
 		double sum;
 		int count = 0;
-		outside:
 		while(true){
 			for(int i = 0;i < result.length;i++){
 				sum = 0;
-				
+
 				for(int j = 0;j < result.length;j++){
 					if(j < i){
 						sum += a[i][j] * result[j];
@@ -485,38 +463,22 @@ public class CalcNumerical{
 				result[i] = (b[i] - sum)/a[i][i];
 			}
 			count++;
-			
+			if(CalcTool.checkConvergence(data, result, dep))break;
 			if(count > data.getMaxN() ){
 				System.out.println("収束しない");
 				return new double[0];
-			
 			}
-			switch (data.getCon()) {
-			case ERROR:
-				if(Calc.vecNorm(Calc.subVec(result, dep), data.getNorm()) < data.getEps()){
-					break outside;
-				}
-			case RESIDUAL:
-				if(Calc.vecNorm(Calc.residual(a, result, b), data.getNorm()) < data.getEps()){
-					break outside;
-				}
-			case RELATIVEERROR:
-				if(Calc.vecNorm(Calc.subVec(result, dep), data.getNorm()) / Calc.vecNorm(result, data.getNorm()) < data.getEps()){
-					break outside;
-				}
-			case RELATIVERESIDUAL:
-				if(Calc.vecNorm(Calc.residual(a, result, b), data.getNorm()) / Calc.vecNorm(b, data.getNorm()) < data.getEps()){
-					break outside;
-				}
-			default:
-			}
-
 			for(int i = 0;i < result.length;i++){
 				dep[i] = result[i];
 			}
 		}
 		return result;
 	}
+	/** SOR法を用いて解ベクトルを求める
+	 * @param data 数値計算用データ
+	 * @param accelerate 加速パラメータ
+	 * @return 解ベクトル
+	 */
 	static double[] sor(NumericalData data,double accelerate){
 		double[][] a = CalcTool.arrayCopy(data.getA());
 		double[] b = Arrays.copyOf(data.getB(), data.getB().length);
@@ -524,11 +486,10 @@ public class CalcNumerical{
 		double[] result = new double[dep.length];
 		double sum;
 		int count = 0;
-		outside:
 		while(true){
 			for(int i = 0;i < result.length;i++){
 				sum = 0;
-				
+
 				for(int j = 0;j < result.length;j++){
 					if(j < i){
 						sum += a[i][j] * result[j];
@@ -536,43 +497,22 @@ public class CalcNumerical{
 						sum += a[i][j]*dep[j];
 					}
 				}
-				//dep[i] = (b[i] - sum)/a[i][i];
-				//result[i] = (1 - accelerate) * dep[i] + accelerate * dep[i];
 				result[i] = (b[i] - sum)/a[i][i];
 				result[i] = (1 - accelerate) * dep[i] + accelerate * result[i];
 			}
 			count++;
-			
+			//収束判定
+			if( CalcTool.checkConvergence(data, result, dep) )break;
+			//反復判定
 			if( count > data.getMaxN() ){
 				System.out.println("収束しない");
 				return new double[0];
-			
 			}
-			
-			switch (data.getCon()) {
-			case ERROR:
-				if(Calc.vecNorm(Calc.subVec(result, dep), data.getNorm()) < data.getEps()){
-					break outside;
-				}
-			case RESIDUAL:
-				if(Calc.vecNorm(Calc.residual(a, result, b), data.getNorm()) < data.getEps()){
-					break outside;
-				}
-			case RELATIVEERROR:
-				if(Calc.vecNorm(Calc.subVec(result, dep), data.getNorm()) / Calc.vecNorm(result, data.getNorm()) < data.getEps()){
-					break outside;
-				}
-			case RELATIVERESIDUAL:
-				if(Calc.vecNorm(Calc.residual(a, result, b), data.getNorm()) / Calc.vecNorm(b, data.getNorm()) < data.getEps()){
-					break outside;
-				}
-			default:
-			}
+			//更新処理
+			dep = Arrays.copyOf(result, result.length);
 
-			for(int i = 0;i < result.length;i++){
-				dep[i] = result[i];
-			}
 		}
+		System.out.println("反復回数 : " + count);
 		return result;
 	}
 	static enum Convergence{

@@ -284,6 +284,28 @@ public class CalcTool {
 			baseQuickSort(x, base, curleft, right);
 		}
 	}
+	static boolean checkConvergence(NumericalData data,double[] new_x,double[] old_x){
+		switch (data.getCon()) {
+		case ERROR:
+			if(Calc.vecNorm(Calc.subVec(new_x, old_x), data.getNorm()) < data.getEps()){
+				return true;
+			}
+		case RESIDUAL:
+			if(Calc.vecNorm(Calc.residual(data.getA(), new_x, data.getB()), data.getNorm()) < data.getEps()){
+				return true;
+			}
+		case RELATIVEERROR:
+			if(Calc.vecNorm(Calc.subVec(new_x, old_x), data.getNorm()) / Calc.vecNorm(new_x, data.getNorm()) < data.getEps()){
+				return true;
+			}
+		case RELATIVERESIDUAL:
+			if(Calc.vecNorm(Calc.residual(data.getA(), new_x, data.getB()), data.getNorm()) / Calc.vecNorm(data.getB(), data.getNorm()) < data.getEps()){
+				return true;
+			}
+		default:
+			return false;
+		}
+	}
 	public static double[][] createHilbert(int n){
 		double[][] hilbert = new double[n][n];
 		for(int i = 0;i < n ;i++){
