@@ -284,26 +284,19 @@ public class CalcTool {
 			baseQuickSort(x, base, curleft, right);
 		}
 	}
-	static boolean checkConvergence(NumericalData data,double[] new_x,double[] old_x){
+	static double calcConvergence(NumericalData data,double[] new_x,double[] old_x){
 		switch (data.getCon()) {
 		case ERROR:
-			if(Calc.vecNorm(Calc.subVec(new_x, old_x), data.getNorm()) < data.getEps()){
-				return true;
-			}
+			return Calc.vecNorm(Calc.subVec(new_x, old_x), data.getNorm());
 		case RESIDUAL:
-			if(Calc.vecNorm(Calc.residual(data.getA(), new_x, data.getB()), data.getNorm()) < data.getEps()){
-				return true;
-			}
+			return Calc.vecNorm(Calc.residual(data.getA(), new_x, data.getB()), data.getNorm());
 		case RELATIVEERROR:
-			if(Calc.vecNorm(Calc.subVec(new_x, old_x), data.getNorm()) / Calc.vecNorm(new_x, data.getNorm()) < data.getEps()){
-				return true;
-			}
+			return Calc.vecNorm(Calc.subVec(new_x, old_x), data.getNorm()) / Calc.vecNorm(new_x, data.getNorm());
 		case RELATIVERESIDUAL:
-			if(Calc.vecNorm(Calc.residual(data.getA(), new_x, data.getB()), data.getNorm()) / Calc.vecNorm(data.getB(), data.getNorm()) < data.getEps()){
-				return true;
-			}
+			return Calc.vecNorm(Calc.residual(data.getA(), new_x, data.getB()), data.getNorm())
+				/ Calc.vecNorm(data.getB(), data.getNorm());
 		default:
-			return false;
+			throw new UnsupportedOperationException();
 		}
 	}
 	public static double[][] createHilbert(int n){

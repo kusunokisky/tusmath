@@ -178,6 +178,13 @@ public class Calc {
 		}
 		return Math.sqrt(result);
 	}
+	static double vecNormP(double x[] ,int p){
+		double result = 0;
+		for(int i = 0;i < x.length;i++){
+			result += Math.pow(Math.abs(x[i]), p);
+		}
+		return Math.pow(result, 1.0 / p);
+	}
 	/**
 	 * ベクトルの∞ノルムを計算する
 	 * @param x
@@ -276,8 +283,16 @@ public class Calc {
 		}
 		return result;
 	}
-	static double conditionNumber(double[][] a){
-		return Calc.matNormInf(a) * Calc.matNormInf( CalcNumerical.inverse(a) );
+	static double conditionNumber(double[][] a,Norm norm){
+		switch (norm) {
+		case ONE:
+			return Calc.matNorm1(a) * Calc.matNorm1( CalcNumerical.inverse(a) );
+		case INFINITY:
+			return Calc.matNormInf(a) * Calc.matNormInf( CalcNumerical.inverse(a) );
+		default:
+			throw new UnsupportedOperationException();
+		}
+
 	}
 	/**
 	 * 相対誤差を返す

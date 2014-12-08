@@ -11,6 +11,11 @@ class NumericalData {
 	private int maxN;
 	private Convergence con;
 	private Norm norm;
+	/**
+	 * 反復計算処理において反復回数を保持する
+	 * 収束しない場合は -1 がはいる
+	 */
+	private int count = 0;
 	
 	public NumericalData(double[][] a,double[] b) {
 		this.a = a;
@@ -57,6 +62,12 @@ class NumericalData {
 	}
 	void setNorm(Norm norm) {
 		this.norm = norm;
+	}
+	int getCount() {
+		return count;
+	}
+	void setCount(int count) {
+		this.count = count;
 	}
 
 }

@@ -425,16 +425,16 @@ public class CalcNumerical{
 				result[i] = (b[i] - sum)/a[i][i];
 			}
 			count++;
-			if(CalcTool.checkConvergence(data, result, dep))break;
-			if(count > data.getMaxN() ){
-				System.out.println("収束しない");
+			//収束判定
+			if(CalcTool.calcConvergence(data, result, dep) < data.getEps())break;
+			//反復判定
+			if( data.getMaxN() < count ){
+				data.setCount(-1);
 				return new double[0];
 			}
-
-			for(int i = 0;i < result.length;i++){
-				dep[i] = result[i];
-			}
+			dep = Arrays.copyOf(result, result.length);
 		}
+		data.setCount(count);
 		return result;
 	}
 	/**
@@ -463,15 +463,16 @@ public class CalcNumerical{
 				result[i] = (b[i] - sum)/a[i][i];
 			}
 			count++;
-			if(CalcTool.checkConvergence(data, result, dep))break;
-			if(count > data.getMaxN() ){
-				System.out.println("収束しない");
+			//収束判定
+			if(CalcTool.calcConvergence(data, result, dep) < data.getEps())break;
+			//反復判定
+			if( data.getMaxN() < count ){
+				data.setCount(-1);
 				return new double[0];
 			}
-			for(int i = 0;i < result.length;i++){
-				dep[i] = result[i];
-			}
+			dep = Arrays.copyOf(result, result.length);
 		}
+		data.setCount(count);
 		return result;
 	}
 	/** SOR法を用いて解ベクトルを求める
@@ -502,17 +503,17 @@ public class CalcNumerical{
 			}
 			count++;
 			//収束判定
-			if( CalcTool.checkConvergence(data, result, dep) )break;
+			if(CalcTool.calcConvergence(data, result, dep) < data.getEps())break;
 			//反復判定
-			if( count > data.getMaxN() ){
-				System.out.println("収束しない");
+			if( data.getMaxN() < count ){
+				data.setCount(-1);
 				return new double[0];
 			}
-			//更新処理
+			
 			dep = Arrays.copyOf(result, result.length);
 
 		}
-		System.out.println("反復回数 : " + count);
+		data.setCount(count);
 		return result;
 	}
 	static enum Convergence{
