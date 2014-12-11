@@ -242,7 +242,7 @@ public class CalcNumerical{
 	 * 完全ピポッド選択付ガウスの消去法を使いAx=bの解ベクトルを求める
 	 * @param a 方程式の係数行列
 	 * @param b 方程式の右辺項
-	 * @return 解ベクトル
+	 * @return 解ベクトル : 1次元配列
 	 */
 	static double[] completePivotGauss(double a[][],double[] b){
 		double[][] a_ = CalcTool.arrayCopy(a);
@@ -439,8 +439,8 @@ public class CalcNumerical{
 	}
 	/**
 	 * ガウス・ザイデル法により解ベクトルを求める
-	 * @param data
-	 * @return
+	 * @param data 数値計算用データ
+	 * @return 解ベクトル
 	 */
 	static double[] gaussSeidel(NumericalData data){
 		double[][] a = CalcTool.arrayCopy(data.getA());
@@ -506,10 +506,11 @@ public class CalcNumerical{
 			if(CalcTool.calcConvergence(data, result, dep) < data.getEps())break;
 			//反復判定
 			if( data.getMaxN() < count ){
+				//反復回数を収束しない(-1)に変更
 				data.setCount(-1);
+				//空配列をかえす
 				return new double[0];
 			}
-			
 			dep = Arrays.copyOf(result, result.length);
 
 		}

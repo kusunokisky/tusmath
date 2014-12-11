@@ -284,6 +284,14 @@ public class CalcTool {
 			baseQuickSort(x, base, curleft, right);
 		}
 	}
+	/**
+	 * 収束判定の値を返す
+	 * @param data
+	 * @param new_x
+	 * @param old_x
+	 * @return 収束判定の値
+	 * @exception UnsupportedOperationException 使用できない動作
+	 */
 	static double calcConvergence(NumericalData data,double[] new_x,double[] old_x){
 		switch (data.getCon()) {
 		case ERROR:
@@ -299,7 +307,12 @@ public class CalcTool {
 			throw new UnsupportedOperationException();
 		}
 	}
-	public static double[][] createHilbert(int n){
+	/**
+	 * 
+	 * @param n
+	 * @return
+	 */
+	static double[][] createHilbert(int n){
 		double[][] hilbert = new double[n][n];
 		for(int i = 0;i < n ;i++){
 			for(int j = 0;j < n;j++){

@@ -52,7 +52,7 @@ public class Start {
 				sum += a[i][j] * b[j];
 			
 			}
-			x[i] = sum;
+			x[i] = 1;
 		}
 		System.out.println("[2.1]");
 		CalcTool.printVec(x);
