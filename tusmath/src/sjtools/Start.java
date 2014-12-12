@@ -72,7 +72,7 @@ public class Start {
 		System.out.println("[3.2]");
 		double[] hx_ = CalcNumerical.partialPivotGauss(hdata.getA(), hdata.getB());
 		hdata.setCon(Convergence.RELATIVERESIDUAL);
-		System.out.println(CalcTool.calcConvergence(hdata, hb, Calc.matVec(h, hx_)));
+		System.out.println(CalcTool.calcConvergence(hdata, hx_, Calc.matVec(h, hx_)));
 		System.out.println("[3.3]");
 		hdata.setCon(Convergence.RELATIVEERROR);
 		System.out.println(CalcTool.calcConvergence(hdata, hx, hx_));

@@ -286,22 +286,25 @@ public class CalcTool {
 	}
 	/**
 	 * 収束判定の値を返す
+	 * 誤差 : ||真値-近似値||
+	 * 残差 : ||b-Ax||(x:真値)
 	 * @param data
-	 * @param new_x
-	 * @param old_x
+	 * @param true_x
+	 * @param near_x
 	 * @return 収束判定の値
 	 * @exception UnsupportedOperationException 使用できない動作
 	 */
-	static double calcConvergence(NumericalData data,double[] new_x,double[] old_x){
+	static double calcConvergence(NumericalData data,double[] true_x,double[] near_x){
 		switch (data.getCon()) {
 		case ERROR:
-			return Calc.vecNorm(Calc.subVec(new_x, old_x), data.getNorm());
+			return Calc.vecNorm(Calc.subVec(true_x, near_x), data.getNorm());
 		case RESIDUAL:
-			return Calc.vecNorm(Calc.residual(data.getA(), new_x, data.getB()), data.getNorm());
+			return Calc.vecNorm(Calc.residual(data.getA(), true_x, data.getB()), data.getNorm());
 		case RELATIVEERROR:
-			return Calc.vecNorm(Calc.subVec(new_x, old_x), data.getNorm()) / Calc.vecNorm(new_x, data.getNorm());
+			return Calc.vecNorm(Calc.subVec(true_x, near_x), data.getNorm()) / Calc.vecNorm(true_x, data.getNorm());
+			
 		case RELATIVERESIDUAL:
-			return Calc.vecNorm(Calc.residual(data.getA(), new_x, data.getB()), data.getNorm())
+			return Calc.vecNorm(Calc.residual(data.getA(), true_x, data.getB()), data.getNorm())
 				/ Calc.vecNorm(data.getB(), data.getNorm());
 		default:
 			throw new UnsupportedOperationException();
