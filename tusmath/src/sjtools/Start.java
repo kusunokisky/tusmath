@@ -45,13 +45,7 @@ public class Start {
 		a[0][0] = 1.0E-4;
 		b[0] = 4.0001;
 		double[] x = new double[n];
-		double sum;
 		for(int i = 0;i < n;i++){
-			sum = 0;
-			for(int j = 0;j < n; j++){
-				sum += a[i][j] * b[j];
-			
-			}
 			x[i] = 1;
 		}
 		System.out.println("[2.1]");
