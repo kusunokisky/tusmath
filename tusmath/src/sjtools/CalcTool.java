@@ -286,31 +286,31 @@ public class CalcTool {
 	}
 	/**
 	 * 収束判定の値を返す
-	 * @param data
-	 * @param new_x
-	 * @param old_x
+	 * @param data 数計算用のデータ
+	 * @param true_x 真値
+	 * @param approximate_x 近似値
 	 * @return 収束判定の値
 	 * @exception UnsupportedOperationException 使用できない動作
 	 */
-	static double calcConvergence(NumericalData data,double[] new_x,double[] old_x){
+	static double calcConvergence(NumericalData data,double[] true_x,double[] approximate_x){
 		switch (data.getCon()) {
 		case ERROR:
-			return Calc.vecNorm(Calc.subVec(new_x, old_x), data.getNorm());
+			return Calc.vecNorm(Calc.subVec(true_x, approximate_x), data.getNorm());
 		case RESIDUAL:
-			return Calc.vecNorm(Calc.residual(data.getA(), new_x, data.getB()), data.getNorm());
+			return Calc.vecNorm(Calc.residual(data.getA(), true_x, data.getB()), data.getNorm());
 		case RELATIVEERROR:
-			return Calc.vecNorm(Calc.subVec(new_x, old_x), data.getNorm()) / Calc.vecNorm(new_x, data.getNorm());
+			return Calc.vecNorm(Calc.subVec(true_x, approximate_x), data.getNorm()) / Calc.vecNorm(true_x, data.getNorm());
 		case RELATIVERESIDUAL:
-			return Calc.vecNorm(Calc.residual(data.getA(), new_x, data.getB()), data.getNorm())
+			return Calc.vecNorm(Calc.residual(data.getA(), true_x, data.getB()), data.getNorm())
 				/ Calc.vecNorm(data.getB(), data.getNorm());
 		default:
 			throw new UnsupportedOperationException();
 		}
 	}
 	/**
-	 * 
-	 * @param n
-	 * @return
+	 * n次のヒルバート行列を生成する(A[ij] = 1 / i+j-1)
+	 * @param n 次数
+	 * @return n次ヒルバート行列
 	 */
 	static double[][] createHilbert(int n){
 		double[][] hilbert = new double[n][n];
