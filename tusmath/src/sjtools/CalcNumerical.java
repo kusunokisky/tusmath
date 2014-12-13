@@ -517,10 +517,4 @@ public class CalcNumerical{
 		data.setCount(count);
 		return result;
 	}
-	static enum Convergence{
-		ERROR,RESIDUAL,RELATIVEERROR,RELATIVERESIDUAL
-	}
-	static enum Norm{
-		ONE,TWO,INFINITY
-	}
 }

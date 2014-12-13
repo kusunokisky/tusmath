@@ -1,10 +1,9 @@
 package sjtools;
 
-import sjtools.CalcNumerical.Norm;
 
 
 /**
- * 配列の演算処理など処理を行う
+ * 配列の演算処理などを行う
  * @author takeru
  */
 public class Calc {
@@ -65,7 +64,7 @@ public class Calc {
 	 * @param y ベクトル行列(1次元配列)
 	 * @return 	内積の値
 	 * @throws UnsupportedOperationException 配列の長さが異なるとき<br/>
-	 * 										 
+	 *
 	 */
 	static double innProb(double x[],double y[]){
 		if(x.length != y.length)throw new UnsupportedOperationException();

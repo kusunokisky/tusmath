@@ -1,22 +1,44 @@
 package sjtools;
-
-import sjtools.CalcNumerical.Convergence;
-import sjtools.CalcNumerical.Norm;
-
+/**
+ * 数値計算に必要な値をまとめるクラス
+ * @author takeru
+ *
+ */
 class NumericalData {
+	/**
+	 * 係数行列
+	 */
 	private double[][] a;
+	/**
+	 * 初期ベクトル
+	 */
 	private double[] initX;
+	/**
+	 * 右辺項
+	 */
 	private double[] b;
+	/**
+	 * 許容誤差
+	 */
 	private double eps;
+	/**
+	 * 最大反復回数
+	 */
 	private int maxN;
+	/**
+	 * 使用する収束判定
+	 */
 	private Convergence con;
+	/**
+	 * 使用するノルム
+	 */
 	private Norm norm;
 	/**
 	 * 反復計算処理において反復回数を保持する
 	 * 収束しない場合は -1 がはいる
 	 */
 	private int count = 0;
-	
+
 	public NumericalData(double[][] a,double[] b) {
 		this.a = a;
 		this.b = b;

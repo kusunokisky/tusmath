@@ -1,10 +1,5 @@
 package sjtools;
 
-import sjtools.CalcNumerical.Convergence;
-import sjtools.CalcNumerical.Norm;
-
-
-
 public class Start {
 	public static void main(String[] args) {
 		int n = 100;
@@ -20,14 +15,14 @@ public class Start {
 		System.out.println("||D||1 = " + Calc.matNorm1(d));
 		System.out.println("||D||2 = " + 100);
 		System.out.println("||D||∞ = " + Calc.matNormInf(d));
-		
+
 		double[] y = new double[n];
 		for(int i = 0;i < n;i++){
 			y[i] = i + 1;
 		}
 		System.out.println("[1.2]");
 		System.out.println( Calc.vecNormP(y, 3) );
-		
+
 		n = 5;
 		double[][] a = new double[n][n];
 		double[] b = new double[n];
@@ -66,7 +61,7 @@ public class Start {
 		}
 		NumericalData hdata = new NumericalData(h,hb);
 		hdata.setNorm(Norm.INFINITY);
-		
+
 		System.out.println("[3.1]");
 		System.out.println(Calc.conditionNumber(hdata.getA(),hdata.getNorm()));
 		System.out.println("[3.2]");
@@ -78,7 +73,7 @@ public class Start {
 		System.out.println(CalcTool.calcConvergence(hdata, hx, hx_));
 		System.out.println("[3.4");
 		System.out.println("理論的なことは省略");
-		
+
 		System.out.println("[4]");
 		System.out.println("プログラムを参照");
 		n = 200;
@@ -134,7 +129,7 @@ public class Start {
 		CalcNumerical.jacobi(t2data);
 		System.out.println(t2data.getCount());
 		System.out.println("理論的なのことは省略");
-		
+
 		n = 100;
 		double[][] la = new double[n][n];
 		for(int i = 0; i < n;i++){
@@ -157,5 +152,5 @@ public class Start {
 		System.out.println(lsum);
 
 	}
-	
+
 }
