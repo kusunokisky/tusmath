@@ -6,6 +6,14 @@ class ImaginaryCalc extends Calc {
 		throw new UnsupportedOperationException();
 	}
 	/**
+	 * 複素共役を返す
+	 * @param x 複素数
+	 * @return 複素共役
+	 */
+	static ImaginaryData conjugate(ImaginaryData x){ 
+		return new ImaginaryData(x.getReal(), -x.getImaginary());
+	}
+	/**
 	 * 複素数の絶対値を返す
 	 * @param real 実部
 	 * @param imaginary 虚部
@@ -13,6 +21,59 @@ class ImaginaryCalc extends Calc {
 	 */
 	static double abs(double real,double imaginary){
 		return Math.sqrt(Math.pow(real, 2) + Math.pow(imaginary,2));
+	}
+	/**
+	 * 複素数の加算を行う
+	 * @param x 複素数
+	 * @param y 複素数
+	 * @return 加算された複素数
+	 */
+	static ImaginaryData add(ImaginaryData x,ImaginaryData y){
+		return new ImaginaryData(x.getReal() + y.getReal(), x.getImaginary() + y.getImaginary());
+	}
+	/**
+	 * 複素数の減算を行う
+	 * @param x 複素数
+	 * @param y 複素数
+	 * @return 減算された複素数
+	 */
+	static ImaginaryData subtract(ImaginaryData x,ImaginaryData y){
+		return new ImaginaryData(x.getReal() - y.getReal(), x.getReal() - y.getReal());
+	}
+	/**
+	 * 複素数の乗算を行う
+	 * (a+bi) * (c + di) = (ac-bd)+(ad+bc)i
+	 */
+	static ImaginaryData multiple(ImaginaryData x,ImaginaryData y){
+		return new ImaginaryData(x.getReal()*y.getReal() - x.getImaginary()*y.getImaginary(),
+								x.getReal()*y.getImaginary() + x.getImaginary()*y.getReal());
+	}
+	/**
+	 * 複素数の除算を行う
+	 * @param x 分子とする複素数
+	 * @param y 分母とする複素数
+	 * @return y / x
+	 */
+	static ImaginaryData division(ImaginaryData x,ImaginaryData y){
+		double a = y.getReal();
+		double b = y.getImaginary();
+		double denom = Math.pow(a, 2) + Math.pow(b, 2);
+		return new ImaginaryData( (a*x.getReal() + b*x.getImaginary() ) / denom,
+								  (a*x.getImaginary() - b*x.getReal() ) / denom);
+	}
+	/**
+	 * 複素数ベクトルの加算を計算する
+	 * @param x 複素1次元配列
+	 * @param y 複素1次元配列
+	 * @return 複素1次元配列
+	 */
+	static ImaginaryData[] addVec(ImaginaryData[] x,ImaginaryData[] y){
+		if(x.length != y.length)throw new UnsupportedOperationException();
+		ImaginaryData[] result = new ImaginaryData[x.length];
+		for(int i = 0;i < result.length;i++){
+			result[i] = add(x[i],y[i]);
+		}
+		return result;
 	}
 	/**
 	 * 虚数を含んだベクトルの１ノルムを計算する
