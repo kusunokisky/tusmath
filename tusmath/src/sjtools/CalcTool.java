@@ -254,19 +254,19 @@ public class CalcTool {
 	 * クイックソートを利用し,基準データを元にソートを行う
 	 * @param x ソートしたいデータ
 	 * @param base 変更された基準データ
-	 * @param left 
+	 * @param left
 	 * @param right
 	 */
 	public static void baseQuickSort(double[] x,int[] base, int left, int right) {
 		int curleft = left;
 		int curright = right;
 		int pivot = base[(curleft + curright) / 2];
-		
+
 		do {
 			while (base[curleft] < pivot) {
 				curleft++;
 			}
-			
+
 			while (base[curright] > pivot) {
 				curright--;
 			}
@@ -275,31 +275,34 @@ public class CalcTool {
 				swap (x, curleft-1, curright+1);
 			}
 		} while (curleft <= curright);
-		
+
 		if (left < curright) {
 			baseQuickSort(x, base, left, curright);
 		}
-		
+
 		if (curleft < right) {
 			baseQuickSort(x, base, curleft, right);
 		}
 	}
 	/**
 	 * 収束判定の値を返す
-	 * @param data 数計算用のデータ
-	 * @param true_x 真値
-	 * @param approximate_x 近似値
+	 * 誤差 : ||真値-近似値||
+	 * 残差 : ||b-Ax||(x:真値)
+	 * @param data
+	 * @param true_x
+	 * @param near_x
 	 * @return 収束判定の値
 	 * @exception UnsupportedOperationException 使用できない動作
 	 */
-	static double calcConvergence(NumericalData data,double[] true_x,double[] approximate_x){
+	static double calcConvergence(NumericalData data,double[] true_x,double[] near_x){
 		switch (data.getCon()) {
 		case ERROR:
-			return Calc.vecNorm(Calc.subVec(true_x, approximate_x), data.getNorm());
+			return Calc.vecNorm(Calc.subVec(true_x, near_x), data.getNorm());
 		case RESIDUAL:
 			return Calc.vecNorm(Calc.residual(data.getA(), true_x, data.getB()), data.getNorm());
 		case RELATIVEERROR:
-			return Calc.vecNorm(Calc.subVec(true_x, approximate_x), data.getNorm()) / Calc.vecNorm(true_x, data.getNorm());
+			return Calc.vecNorm(Calc.subVec(true_x, near_x), data.getNorm()) / Calc.vecNorm(true_x, data.getNorm());
+
 		case RELATIVERESIDUAL:
 			return Calc.vecNorm(Calc.residual(data.getA(), true_x, data.getB()), data.getNorm())
 				/ Calc.vecNorm(data.getB(), data.getNorm());
@@ -308,9 +311,9 @@ public class CalcTool {
 		}
 	}
 	/**
-	 * n次のヒルバート行列を生成する(A[ij] = 1 / i+j-1)
-	 * @param n 次数
-	 * @return n次ヒルバート行列
+	 * ヒルバート行列を作成する
+	 * @param n
+	 * @return
 	 */
 	static double[][] createHilbert(int n){
 		double[][] hilbert = new double[n][n];

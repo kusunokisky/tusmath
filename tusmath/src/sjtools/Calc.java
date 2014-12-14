@@ -1,10 +1,9 @@
 package sjtools;
 
-import sjtools.CalcNumerical.Norm;
 
 
 /**
- * 配列の演算処理など処理を行う
+ * 配列の演算処理などを行う
  * @author takeru
  */
 public class Calc {
@@ -32,11 +31,10 @@ public class Calc {
 	 * @param x ベクトル行列(1次元配列)
 	 * @param y ベクトル行列(1次元配列)
 	 * @return 	加算されたベクトル<br/>
-	 * 			第一引数もしくは第二引数がnullの場合null
+	 * @throw UnsupportedOperationException 第一引数と第二引数の配列の長さが異なるため
 	 */
 	static double[] addVec(double x[],double y[]){
-		if(x == null || y== null)return null;
-		if(x.length != y.length)throw new UnsupportedOperationException("第一引数と第二引数の配列の長さが異なるため");
+		if(x.length != y.length)throw new UnsupportedOperationException();
 		double result[] = new double[x.length];
 		for(int i = 0;i<result.length;i++){
 			result[i] = x[i] + y[i];
@@ -48,11 +46,11 @@ public class Calc {
 	 * @param x ベクトル行列(1次元配列)
 	 * @param y ベクトル行列(1次元配列)
 	 * @return 	減算されたベクトル<br/>
-	 * 			第一引数もしくは第二引数がnullの場合null
+	 * @throw UnsupportedOperationException 第一引数と第二引数の配列の長さが異なるため
 	 */
 	static double[] subVec(double x[],double y[]){
 		if(x == null || y== null)return null;
-		if(x.length != y.length)throw new UnsupportedOperationException("第一引数と第二引数の配列の長さが異なるため");
+		if(x.length != y.length)throw new UnsupportedOperationException();
 		double result[] = new double[x.length];
 		for(int i = 0;i<result.length;i++){
 			result[i] = x[i] - y[i];
@@ -65,7 +63,7 @@ public class Calc {
 	 * @param y ベクトル行列(1次元配列)
 	 * @return 	内積の値
 	 * @throws UnsupportedOperationException 配列の長さが異なるとき<br/>
-	 * 										 
+	 *
 	 */
 	static double innProb(double x[],double y[]){
 		if(x.length != y.length)throw new UnsupportedOperationException();
@@ -77,9 +75,10 @@ public class Calc {
 	}
 	/**
 	 * 行列aとベクトルxの積を計算する
-	 * @param a
-	 * @param x
-	 * @return
+	 * @param a 2次元配列
+	 * @param x 1次元配列
+	 * @return 第二引数の配列数を持った1次元配列
+	 * @throw UnsupportedOperationException 第一引数と第二引数の配列の長さが異なるため
 	 */
 	static double[] matVec(double a[][] , double x[]){
 		for(int i = 0;i < a.length;i++)if(a[i].length != x.length)throw new UnsupportedOperationException();
@@ -178,6 +177,12 @@ public class Calc {
 		}
 		return Math.sqrt(result);
 	}
+	/**
+	 * ベクトルのpノルムを計算する
+	 * @param x ベクトル(1次元配列)
+	 * @param p 数値
+	 * @return 第一引数のpノルム
+	 */
 	static double vecNormP(double x[] ,int p){
 		double result = 0;
 		for(int i = 0;i < x.length;i++){
@@ -191,7 +196,7 @@ public class Calc {
 	 * @return
 	 */
 	static double vecNormInf(double x[]){
-		double result = x[0];
+		double result = Math.abs(x[0]);
 		for(int i = 1 ; i < x.length;i++){
 			double dep = Math.abs(x[i]);
 			if( result < dep){
@@ -283,6 +288,25 @@ public class Calc {
 		}
 		return result;
 	}
+	/**
+	 * フロベニウスノルム
+	 */
+	static double matNormFrobenius(double x[][]){
+		double sum = 0;
+		for(int i = 0; i < x.length;i++){
+			for(int j = 0; j < x[i].length;j++){
+				sum += Math.pow(Math.abs(x[i][j]),2);
+			}
+		}
+		return Math.sqrt(sum);
+	}
+	/**
+	 * 
+	 * 条件数を返す
+	 * @param a 元となる行列
+	 * @param norm
+	 * @return
+	 */
 	static double conditionNumber(double[][] a,Norm norm){
 		switch (norm) {
 		case ONE:
