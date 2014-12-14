@@ -209,4 +209,11 @@ class Example {
 		System.out.println(sum);
 		
 	}
+	static void test(){
+		ImaginaryData x = new ImaginaryData(5,-6);
+		ImaginaryData y = new ImaginaryData(3, 2);
+		ImaginaryData t = ImaginaryCalc.division(x, y);
+		System.out.println(t.getReal());
+		System.out.println(t.getImaginary());
+	}
 }
