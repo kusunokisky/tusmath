@@ -405,6 +405,8 @@ public class CalcNumerical{
 	}
 	/**
 	 * ヤコビ法により解ベクトルを求める
+	 * A = D+E+F (D:対角行列 E:狭義上三角行列 F:狭義下三角行列)
+	 * T = D^-1(E+F) : 反復行列
 	 *  * @return 解ベクトル
 	 */
 	static double[] jacobi(NumericalData data){
@@ -426,15 +428,19 @@ public class CalcNumerical{
 			}
 			count++;
 			//収束判定
-			if(CalcTool.calcConvergence(data, result, dep) < data.getEps())break;
+			if(CalcTool.calcConvergence(data, result, dep) < data.getEps()){
+				data.setConvergence(true);
+				data.setCount(count);
+				break;
+			}
 			//反復判定
 			if( data.getMaxN() < count ){
+				data.setConvergence(false);
 				data.setCount(-1);
 				return new double[0];
 			}
 			dep = Arrays.copyOf(result, result.length);
 		}
-		data.setCount(count);
 		return result;
 	}
 	/**
@@ -464,15 +470,19 @@ public class CalcNumerical{
 			}
 			count++;
 			//収束判定
-			if(CalcTool.calcConvergence(data, result, dep) < data.getEps())break;
+			if(CalcTool.calcConvergence(data, result, dep) < data.getEps()){
+				data.setConvergence(true);
+				data.setCount(count);
+				break;
+			}
 			//反復判定
 			if( data.getMaxN() < count ){
+				data.setConvergence(false);
 				data.setCount(-1);
 				return new double[0];
 			}
 			dep = Arrays.copyOf(result, result.length);
 		}
-		data.setCount(count);
 		return result;
 	}
 	/** SOR法を用いて解ベクトルを求める
@@ -503,10 +513,14 @@ public class CalcNumerical{
 			}
 			count++;
 			//収束判定
-			if(CalcTool.calcConvergence(data, result, dep) < data.getEps())break;
+			if(CalcTool.calcConvergence(data, result, dep) < data.getEps()){
+				data.setConvergence(true);
+				data.setCount(count);
+				break;
+			}
 			//反復判定
 			if( data.getMaxN() < count ){
-				//反復回数を収束しない(-1)に変更
+				data.setConvergence(false);
 				data.setCount(-1);
 				//空配列をかえす
 				return new double[0];
