@@ -66,10 +66,10 @@ class Example {
 		System.out.println(Calc.conditionNumber(hdata.getA(),hdata.getNorm()));
 		System.out.println("[3.2]");
 		double[] hx_ = CalcNumerical.partialPivotGauss(hdata.getA(), hdata.getB());
-		hdata.setCon(Convergence.RELATIVERESIDUAL);
+		hdata.setCon(ConvergenceCriterion.RELATIVERESIDUAL);
 		System.out.println(CalcTool.calcConvergence(hdata, hx_, Calc.matVec(h, hx_)));
 		System.out.println("[3.3]");
-		hdata.setCon(Convergence.RELATIVEERROR);
+		hdata.setCon(ConvergenceCriterion.RELATIVEERROR);
 		System.out.println(CalcTool.calcConvergence(hdata, hx, hx_));
 		System.out.println("[3.4");
 		System.out.println("理論的なことは省略");
@@ -96,12 +96,12 @@ class Example {
 		t1data.setInitX(tx1);
 		t1data.setEps(1.0E-8);
 		t1data.setMaxN(500);
-		t1data.setCon(Convergence.RELATIVERESIDUAL);
+		t1data.setCon(ConvergenceCriterion.RELATIVEERROR);
 		t1data.setNorm(Norm.INFINITY);
 		System.out.println("[5.1]");
 		for(int i = 1;i < 20 ; i++){
 			CalcNumerical.sor(t1data, i / 10.0);
-			System.out.println("ω = " + (i / 10.0) + " ; 反復回数 : " + t1data.getCount());
+			System.out.println("ω = " + (i / 10.0) + " ; 反復回数 : " +t1data.getCount());
 		}
 		n = 3;
 		double[][] ta2 = new double[n][n];
@@ -123,7 +123,7 @@ class Example {
 		t2data.setInitX(tx2);
 		t2data.setEps(1.0E-8);
 		t2data.setMaxN(500);
-		t2data.setCon(Convergence.RELATIVERESIDUAL);
+		t2data.setCon(ConvergenceCriterion.RELATIVERESIDUAL);
 		t2data.setNorm(Norm.INFINITY);
 		System.out.println("[5.2]");
 		CalcNumerical.jacobi(t2data);
@@ -174,7 +174,6 @@ class Example {
 		}
 		System.out.println(sum);
 		double[] t = {1,1,1,1,1};
-		double[] ti = {0,0,0,0,0};
 		System.out.println(Calc.vecNorm2(t));
 		double[][] a5 = { {3,-2,0},
 						  {-2,3,-2},
@@ -187,14 +186,27 @@ class Example {
 		data.setEps(1.0E-7);
 		data.setMaxN(200);
 		data.setNorm(Norm.ONE);
-		data.setCon(Convergence.RESIDUAL);
+		data.setCon(ConvergenceCriterion.RESIDUAL);
 		CalcNumerical.jacobi(data);
-		System.out.println(data.isConvergence());
+		System.out.println(data.fullfilConvergence());
 		double[] x_ = CalcNumerical.gaussSeidel(data);
 		CalcTool.printVec(x_);
 		System.out.println(data.getCount());
-		System.out.println(data.isConvergence());
+		System.out.println(data.fullfilConvergence());
 		System.out.println(Calc.vecNorm1(Calc.subVec(b5, Calc.matVec(a5, x_))));
+		double[][] h = new double[10][10];
+		for(int i =0 ;i < 10 ;i++){
+			for(int j = 0;j < 10;j++){
+				h[i][j] = Math.sqrt(Math.pow(i+1, 2) + Math.pow(j+1, 2) - 1);
+			}
+		}
+		CalcTool.printMat(h);
+		double[][] luh = CalcNumerical.luDecomposition(h);
+		sum = 1;
+		for(int i = 0;i < 10;i++){
+			sum*= luh[i][i];
+		}
+		System.out.println(sum);
 		
 	}
 }

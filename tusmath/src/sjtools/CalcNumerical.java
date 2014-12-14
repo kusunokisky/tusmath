@@ -509,7 +509,7 @@ public class CalcNumerical{
 					}
 				}
 				result[i] = (b[i] - sum)/a[i][i];
-				result[i] = (1 - accelerate) * dep[i] + accelerate * result[i];
+				result[i] = (1 - accelerate) * dep[i] + (accelerate * result[i]);
 			}
 			count++;
 			//収束判定

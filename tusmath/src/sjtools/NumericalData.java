@@ -26,13 +26,13 @@ class NumericalData {
 	 */
 	private int maxN;
 	/**
-	 * 収束したかどうか
+	 * 収束判定条件を満たすかどうか
 	 */
-	private boolean convergence;
+	private boolean convergenceCriterion;
 	/**
-	 * 使用する収束判定
+	 * 使用する収束判定条件
 	 */
-	private Convergence con;
+	private ConvergenceCriterion con;
 	/**
 	 * 使用するノルム
 	 */
@@ -97,14 +97,14 @@ class NumericalData {
 	void setMaxN(int maxN) {
 		this.maxN = maxN;
 	}
-	Convergence getCon() {
+	ConvergenceCriterion getCon() {
 		return con;
 	}
 	/**
-	 * 収束判定(誤差,残差,相対誤差,相対残差)を設定する
+	 * 収束判定条件(誤差,残差,相対誤差,相対残差)を設定する
 	 * @param con
 	 */
-	void setCon(Convergence con) {
+	void setCon(ConvergenceCriterion con) {
 		this.con = con;
 	}
 	Norm getNorm() {
@@ -127,15 +127,19 @@ class NumericalData {
 	void setCount(int count) {
 		this.count = count;
 	}
-	boolean isConvergence() {
-		return convergence;
+	/**
+	 * 収束判定条件を満たすかを返す
+	 * @return
+	 */
+	boolean fullfilConvergence() {
+		return convergenceCriterion;
 	}
 	/**
 	 * 収束したか設定する
 	 * @param convergence
 	 */
-	void setConvergence(boolean convergence) {
-		this.convergence = convergence;
+	void setConvergence(boolean convergenceCriterion) {
+		this.convergenceCriterion = convergenceCriterion;
 	}
 
 

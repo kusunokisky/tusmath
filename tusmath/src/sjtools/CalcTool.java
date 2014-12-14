@@ -299,9 +299,10 @@ public class CalcTool {
 		case ERROR:
 			return Calc.vecNorm(Calc.subVec(true_x, near_x), data.getNorm());
 		case RESIDUAL:
-			return Calc.vecNorm(Calc.residual(data.getA(), true_x, data.getB()), data.getNorm());
+			return Calc.vecNorm(Calc.residual(data.getA(), true_x, data.getB()), data.getNorm()) ;
 		case RELATIVEERROR:
-			return Calc.vecNorm(Calc.subVec(true_x, near_x), data.getNorm()) / Calc.vecNorm(true_x, data.getNorm());
+			return Calc.vecNormInf(Calc.subVec(true_x, near_x)) / Calc.vecNormInf(true_x);
+			//return Calc.vecNorm(Calc.subVec(true_x, near_x), data.getNorm()) / Calc.vecNorm(true_x, data.getNorm());
 
 		case RELATIVERESIDUAL:
 			return Calc.vecNorm(Calc.residual(data.getA(), true_x, data.getB()), data.getNorm())
