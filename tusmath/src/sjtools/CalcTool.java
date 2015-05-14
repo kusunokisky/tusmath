@@ -144,6 +144,23 @@ public class CalcTool {
 		}
 		return a_;
 	}
+	static double[][] scalarMat(double[][] x , double c){
+		double[][] x_ = CalcTool.arrayCopy(x);
+		for(int i = 0;i < x_.length;i++){
+			transformationF(x_, i, c);
+		}
+		return x_;
+	}
+	static double[][] copyMat(double a[][],int n){
+		int t = a.length-n;
+		double[][] a_ = new double[t][t];
+		for(int k = 0;k<t;k++){
+			for(int l = 0;l<t;l++){
+				a_[k][l] = a[k+n][l+n];
+			}
+		}
+		return a_;
+	}
 	/**
 	 * i行目をc倍する
 	 * @param x 行列
@@ -152,11 +169,10 @@ public class CalcTool {
 	 * @return 作業が施された行列
 	 */
 	static double[][] transformationF(double[][] x,int i, double c){
-		double x_[][] = x;
 		for(int k = 0;k < x[i].length;k++){
-			x_[i][k] *= c;
+			x[i][k] *= c;
 		}
-		return x_;
+		return x;
 	}
 	/**
 	 * i行目をj行目を入れ替える

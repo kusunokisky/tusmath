@@ -57,6 +57,15 @@ public class Calc {
 		}
 		return result;
 	}
+	static double[][] matVec(double x[],double y[]){
+		double[][] a = new double[x.length][y.length];
+		for(int i = 0;i < x.length;i++){
+			for(int j = 0;j < y.length;j++){
+				a[i][j] = x[i]*y[j];
+			}
+		}
+		return a;
+	}
 	/**
 	 *  ベクトル同士の内積(x, y)を計算する
 	 * @param x ベクトル行列(1次元配列)
@@ -112,6 +121,22 @@ public class Calc {
 		for(int i = 0; i < result.length;i++){
 			for(int j = 0; j < result[i].length;j++){
 				result[i][j] = a[i][j] + b[i][j];
+			}
+		}
+		return result;
+	}
+	/**
+	 * 行列同士の加算(a-b)を計算する
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	static double[][] subMat(double a[][],double b[][]){
+		for(int i = 0;i < a.length;i++)if(a[i].length != b.length)throw new UnsupportedOperationException();
+		double result[][] = new double[a.length][a[0].length];
+		for(int i = 0; i < result.length;i++){
+			for(int j = 0; j < result[i].length;j++){
+				result[i][j] = a[i][j] - b[i][j];
 			}
 		}
 		return result;

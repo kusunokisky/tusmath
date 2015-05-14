@@ -531,4 +531,132 @@ public class CalcNumerical{
 		data.setCount(count);
 		return result;
 	}
+	static double[] power(NumericalData data){
+		double[] old_x = Arrays.copyOf(data.getInitX(), data.getInitX().length);
+		double[] new_x;
+		double eigen_old = 0;
+		double eigen_new = 0;
+		int count = 0;
+		boolean hasEigen = false;
+		while(true){
+			double norm2 = Calc.vecNorm2(old_x);
+			for(int i = 0;i < old_x.length;i++){
+				old_x[i] /= norm2; 
+			}
+			new_x = Calc.matVec(data.getA(), old_x);
+			double maxNum = Math.abs(old_x[0]);
+			int eigenNum = 0;
+			for(int i = 1; i < old_x.length;i++){
+				if(maxNum < Math.abs(old_x[i])){
+					maxNum = Math.abs(old_x[i]);
+					eigenNum = i;
+				}
+			}
+			eigen_new = new_x[eigenNum] / old_x[eigenNum];
+			count++;
+			if(hasEigen){
+				if(Math.abs(eigen_new - eigen_old) / Math.abs(eigen_new) < data.getEps()){
+					return new_x;
+				}
+			}else{
+				hasEigen = true;
+			}
+			eigen_old = eigen_new;
+			old_x = Arrays.copyOf(new_x, new_x.length);
+			}
+	}
+	static int sign(double x){
+		//
+		if(x < 0){
+			return -1;
+		}else{
+			return 1;
+		}
+	}
+	static double[][] tridiagonal(double[][] a){
+		double[][] a_ = CalcTool.arrayCopy(a);
+		int n = a.length-2;
+		int t = a.length-1;
+		for(int i = 0; i < n;i++){
+			int r = i+1;
+			double s = 0;
+			for(int j =i+1;j<a.length;j++){
+				s += Math.pow(a[j][i],2);
+			}
+			s = Math.sqrt(s);
+			double[] u_ = new double[t];
+			for(int j = 0;j < t;j++){
+				if(j == 0){
+					u_[j] = sign(a_[r][i])*Math.sqrt((1+Math.abs(a_[r][i])/s)/2);
+				}else{
+					u_[j] = a[r+j][i]/(2*s*Math.abs(u_[0]));
+				}
+			}
+			double[][] p_ = new double[a.length][a.length];
+			for(int k = 0;k<a.length;k++){
+				for(int l = 0;l<a.length;l++){
+					if(k<=i){
+						if(k==l){
+							p_[k][l] = 1;
+						}
+					}else{
+						if(i < l){
+							if(l==k){
+								p_[k][l] = 1.0-2*u_[k-r]*u_[l-r];
+							}else{
+								p_[k][l] = -2*u_[k-r]*u_[l-r];
+							}
+						}
+					}
+				}
+			}
+			double[][] pa =CalcTool.arrayCopy(a_);
+			double[][] tmp = Calc.multipleMat(CalcTool.copyMat(p_, r), CalcTool.copyMat(a, r));
+			//P×A
+			for(int j = 0;j<a.length;j++){
+				if(i < j){
+					for(int k = 0; k<a.length;k++){
+						if(j==r){
+							if(k ==i){
+								pa[j][k] = -sign(a_[r][i])*s;
+							}else if(i < k){
+								pa[j][k] = tmp[j-r][k-r];
+							}
+						}else{
+							if(k ==i){
+								pa[j][k] = 0;
+							}else if(i < k){
+								pa[j][k] = tmp[j-r][k-r];
+							}
+						}
+					}
+				}
+			}
+			//PA × P
+			tmp = Calc.multipleMat(CalcTool.copyMat(pa, r), CalcTool.copyMat(p_, r));
+			for(int k = 0;k<a.length;k++){
+				if(i < k){
+					for(int j = 0; j<a.length;j++){
+						if(k==r){
+							if(j ==i){
+								pa[j][k] = -sign(a_[r][i])*s;
+							}else if(i < j){
+								pa[j][k] = tmp[j-r][k-r];
+							}
+						}else{
+							if(j ==i){
+								pa[j][k] = 0;
+							}else if(i < j){
+								pa[j][k] = tmp[j-r][k-r];
+							}
+						}
+					}
+				}
+			}
+			a_ = CalcTool.arrayCopy(pa);
+			t--;
+		}
+		return a_;
+	}
+
 }

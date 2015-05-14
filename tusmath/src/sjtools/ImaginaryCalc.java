@@ -1,6 +1,10 @@
 package sjtools;
 
-
+/**
+ * 複素数の演算を行うクラス
+ * @author kusunoki
+ *
+ */
 class ImaginaryCalc extends Calc {
 	private ImaginaryCalc() {
 		throw new UnsupportedOperationException();

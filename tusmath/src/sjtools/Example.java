@@ -1,6 +1,53 @@
 package sjtools;
 
 class Example {
+	/*=================================================================================
+	 * x : 誤差	x~ = x + Δx : 近似値
+	 * Ax=b の真の解 x	AΔx =Δb
+	 *Δx = A^-1 * Δb ⇒ ||Δx|| ≦||A^-1|| ||b||,||A|| ||x|| ≧||b||
+	 *||Δx||/||x|| ≦||A|| ||A^-1|| ||Δb||/||b|| = κ(A)||Δb|| / ||b||
+	 *=================================================================================
+	 *||I|| = 1 ||A|| < 1
+	 *⇒1/(1+||A||) ≦ ||(I±A)^-1||≦1/(1-||A||)
+	 *---------------------------------------------------------------------------------
+	 *X : Aの近似逆行列 R : I-XA
+	 *||R||<1⇒||A^-1||≦||X|| / (1-||R||)
+	 *=================================================================================
+	 *(A+ΔA)(x+Δx) = (b + Δb),||ΔA|| ||A^-1|| < 1
+	 *⇒||Δx||/||x||≦κ(A)(||ΔA||/||A|| + ||Δb||/||b||) / (1 - κ(A)||ΔA||/||A||)
+	 *proof
+	 *
+	 *=================================================================================
+	 *D : 対角行列  E : 狭義上三角行列  F : 狭義下三角行列
+	 *A = D + E + Fに分離し
+	 *Jacobi法
+	 *x^(m+1) = -D^-1(E+F)x^m + D^-1 b
+	 *Gauss-Seidel法
+	 *x^(m+1) = D^-1(b-Ex^(m+1)-Fx^(m))
+	 *SOR法
+	 *x^(m+1) = (1-ω)x^m + ωx_^(m+1) (x_ はGauss-Seidel法と同様に求める) 
+	 *---------------------------------------------------------------------------------
+	 *jacobi法
+	 *T = -D^-1(E+F) : 反復式
+	 *ρ(T) > 1 ⇒ jacobi法は収束しない
+	 *Gauss-Seidel法
+	 *T = -(D+E)^-1 F : 反復式
+	 *ρ(T) > 1 ⇒ Gauss-Seidel法は収束しない ρ(T):スペクトル半径 = max{|λ|}
+	 *SOR法
+	 *L = D^-1 E | U = D^-1 F
+	 *T = (I+ωL)^-1{(1-ω)I - ωU} : 反復式
+	 *ρ(T) ≧ |ω-1| が成立
+	 *proof
+	 *φ(λ) = det(λI - T)とする
+	 *(I+ωL)は正則でdet()(I+ωL) = 1
+	 *φ(λ) = det(I+ωL)・det(λI - T) = det{(λ + ω - 1)I + λωL + ωU}
+	 *λ = 0とするとTの固有値λ_1,λ_2,....,λ_nに対して
+	 *(-1)^nλ_1,λ_2,....,λ_n = det{(ω-1)I + ωU} = (ω-1)^n
+	 *ρ(T) = max|λn|≧|ω-1|となる
+	 *=================================================================================
+	 *
+	 *
+	 */
 	static void bTest(){
 		int n = 100;
 		double d[][] = new double[n][n];
@@ -210,10 +257,123 @@ class Example {
 		
 	}
 	static void test(){
-		ImaginaryData x = new ImaginaryData(5,-6);
-		ImaginaryData y = new ImaginaryData(3, 2);
-		ImaginaryData t = ImaginaryCalc.division(x, y);
-		System.out.println(t.getReal());
-		System.out.println(t.getImaginary());
+		double x[] = new double[49];
+		for(int i = 0; i < 49 ; i++){
+			x[i] = Math.sqrt(i + 1);
+		}
+		//System.out.println(Calc.vecNorm2(x));
+		int n = 100;
+		double[][] a = new double[n][n];
+		for(int i = 0; i < n;i++){
+			for(int j = 0; j < n;j++){
+					a[i][j] = i + j +2;
+			}
+		}
+		//CalcTool.printMat(a);
+		//System.out.println(Calc.matNormFrobenius(a));
+		n = 6;
+		double[][] h = CalcTool.createHilbert(n);
+		//System.out.println(Calc.conditionNumber(h, Norm.INFINITY));
+		double[] hb = new double[n]; 
+		double[] trueX = new double[n];
+		for(int i = 0; i < n ; i++){
+		 for(int j = 0; j < n;j++){
+			 hb[i] += h[i][j];
+		 }
+		 trueX[i] = 1;
+		}
+		//CalcTool.printVec(CalcNumerical.gauss(h, hb));
+		//CalcTool.printVec(CalcNumerical.partialPivotGauss(h, hb));
+		//CalcTool.printVec(CalcNumerical.completePivotGauss(h, hb));
+		double[] nearX = CalcNumerical.partialPivotGauss(h,hb);
+		NumericalData hdata = new NumericalData(h, hb);
+		hdata.setCon(ConvergenceCriterion.RELATIVEERROR);
+		hdata.setNorm(Norm.INFINITY);
+		//System.out.println(CalcTool.calcConvergence(hdata, trueX, nearX));
+		System.out.println(Calc.vecNormInf(Calc.subVec(trueX, nearX)) / Calc.vecNormInf(trueX));
+		hb[0] += 0.001 + hb[0];
+		nearX = CalcNumerical.partialPivotGauss(h,hb);
+		System.out.println(Calc.vecNormInf(Calc.subVec(trueX, nearX)) / Calc.vecNormInf(trueX));
+		System.out.println("////////////////////////3//////////////////////");
+		n=3;
+		double[][] ta = {{1,-2,2},{-1,1,-1},{-2,-2,1}};
+		double[] tb = {1,1,1};
+		NumericalData tdata = new NumericalData(ta, tb);
+		double[] initX = { 0,0,0};
+		tdata.setInitX(initX);
+		tdata.setCon(ConvergenceCriterion.RELATIVEERROR);
+		tdata.setNorm(Norm.INFINITY);
+		tdata.setEps(1.0E-12);
+		tdata.setMaxN(50);
+		CalcTool.printVec(CalcNumerical.jacobi(tdata));
+		System.out.println(tdata.fullfilConvergence());
+		System.out.println(tdata.getCount());
+		
+		double[][] pa = {{0,-1,2},{-4,5,6},{8,9,10}};
+		double[] pb = {3,7,11};
+		NumericalData pdata = new NumericalData(pa, pb);
+		pdata.setInitX(initX);
+		pdata.setCon(ConvergenceCriterion.RELATIVEERROR);
+		pdata.setNorm(Norm.TWO);
+		pdata.setEps(1.0E-8);
+		pdata.setMaxN(50);
+		CalcNumerical.jacobi(pdata);
+		System.out.println(pdata.fullfilConvergence());
+		n = 100;
+		double[][] ta1 = new double[n][n];
+		double[] tb1 = new double[n];
+		double[] initXp = new double[n];
+		int ka = 9;
+		for(int i = 0; i < n;i++){
+			for(int j = 0; j < n;j++){
+				if(i == j){
+					ta1[i][j] = ka;
+				}else if(i == j-1){
+					ta1[i][j] = 4;
+				}else if(i == j+1){
+					ta1[i][j] = 4;
+				}
+			}
+			tb1[i] = 1;
+			initXp[i] = 0;
+		}
+		NumericalData kdata = new NumericalData(ta1, tb1);
+		kdata.setInitX(initXp);
+		kdata.setCon(ConvergenceCriterion.RELATIVEERROR);
+		kdata.setNorm(Norm.INFINITY);
+		kdata.setEps(1.0E-8);
+		kdata.setMaxN(500);
+		for(int i = 1;i < 20 ; i++){
+			CalcNumerical.sor(kdata, i / 10.0);
+			System.out.println("ω = " + (i / 10.0) + " ; 反復回数 : " +kdata.getCount());
+		}
+		double[][] la = new double[n][n];
+		for(int i = 0; i < n;i++){
+			for(int j = 0; j < n;j++){
+				if(i == j){
+					la[i][j] = 4;
+				}else if(i == j-1){
+					la[i][j] = 2;
+				}else if(i == j+1){
+					la[i][j] = 2;
+				}else if(i == j-2){
+					la[i][j] = 1;
+				}else if(i == j+2){
+					la[i][j] = 1;
+				}
+			}
+		}
+		double[][] ila = CalcNumerical.inverse(la);
+		double sum = 0;
+		CalcTool.printMat(ila);
+		for(int i= n-1; 0 < i;i--){
+			sum += ila[i][i];
+		}
+		System.out.println(sum);
+		double[][] te = {{1,0,0},{-1,1,0},{-2,-2,1}};
+		double[][] tr = {{0,-2,2},{0,0,-1},{0,0,0}};
+		CalcTool.printMat(CalcNumerical.inverse(te));
+		CalcTool.printMat(Calc.multipleMat(CalcNumerical.inverse(te) , tr));
 	}
+	
 }
