@@ -266,6 +266,7 @@ public class CalcNumerical{
 					}
 				}
 			}
+			//System.out.println("i" + rowPivot + "j" + columnPivot);
 			if(k != rowPivot){
 				CalcTool.transformationG(a_, k, rowPivot);
 				CalcTool.swap(b_, k, rowPivot);
@@ -281,7 +282,9 @@ public class CalcNumerical{
 				}
 				b_[i] -= t * b_[k];
 			}
+			CalcTool.printVec(b_);
 		}
+		CalcTool.printMat(a_);
 		//後退代入
 		for(int i = b_.length-1; i >= 0 ;i--){
 			for(int j = i+1; j < b_.length ;j++){
@@ -291,6 +294,12 @@ public class CalcNumerical{
 		}
 		//解ベクトルの解の入れ替えを行う
 		//CalcTool.baseBubbleSort(b_, base);
+		System.out.println(base[0]);
+		System.out.println(base[1]);
+		System.out.println(base[2]);
+		System.out.println(base[3]);
+		System.out.println(base[4]);
+		System.out.println();
 		CalcTool.baseQuickSort(b_, base, 0, b_.length-1);
 		return b_;
 	}
@@ -306,7 +315,7 @@ public class CalcNumerical{
 		double a_[][] = CalcTool.arrayCopy(a);
 		double b_[] = Arrays.copyOf(b, b.length);
 		//前進消去法
-		for(int k = 0;k < a_.length;k++){
+		for(int k = 0;k < a_.length-1;k++){
 			for(int i = k+1;i < a_.length;i++){
 				double t = a_[i][k]/a_[k][k];
 				for(int j = k+1 ;j < a_[i].length;j++){
@@ -333,18 +342,33 @@ public class CalcNumerical{
 	 */
 	static double[] solveLU(double[][] lu,double[]b){
 		double y[] = Arrays.copyOf(b, b.length);
-
-		for(int i = 0; i < lu.length ;i++){
+		/*`int plus = 0;
+		int sub = 0;
+		int multi = 0;
+		int wari = 0;
+		*/
+		for(int i = 1; i < lu.length ;i++){
 			for(int j = 0; j < i ;j++){
+				//System.out.println("i : " + i+"j : " + j);
 				 y[i] -= lu[i][j]*y[j];
+				// multi++;
+				// sub++;
 			}
 		}
 		for(int i = y.length-1; i >= 0 ;i--){
 			for(int j = i+1; j < y.length ;j++){
+				//System.out.println("i : " + i+"j : " + j);
 				y[i] -= lu[i][j]*y[j];
+				//multi++;
+				//sub++;
 			}
 			y[i] /= lu[i][i];
+			//System.out.println("i = " + i);
+			//wari++;
+			//System.out.println("/ = " + wari);
 		}
+		//System.out.println("解を求めるときの演算回数");
+		//System.out.println(plus +" : " + sub+" : " + multi+" : " + wari);
 		return y;
 	}
 	/**
@@ -354,7 +378,7 @@ public class CalcNumerical{
 	 */
 	static double[][] luDecomposition(double[][] a){
 		double a_[][] = CalcTool.arrayCopy(a);
-		for(int k = 0; k < a_.length ;k++){
+		for(int k = 0; k < a_.length-1 ;k++){
 			for(int i = k+1; i < a_.length;i++){
 				a_[i][k] = a_[i][k] / a_[k][k];
 				for(int j = k + 1;j < a_.length;j++){
@@ -381,6 +405,7 @@ public class CalcNumerical{
 	private static double[][] luInverse(double lu[][]){
 		double[][] e  = CalcTool.unitMat(lu.length);
 		for(int i = 0;i < lu.length;i++){
+
 			for(int k =0;k < lu.length;k++){
 				for(int j = 0; j < k ;j++){
 					e[k][i] -= lu[k][j]*e[j][i];
@@ -392,6 +417,7 @@ public class CalcNumerical{
 				}
 				e[k][i] /= lu[k][k];
 			}
+
 		}
 		return e;
 	}
@@ -531,39 +557,119 @@ public class CalcNumerical{
 		data.setCount(count);
 		return result;
 	}
+	/**
+	 * 修正コレスキー分解された行列を利用して解を求める
+	 * @param ldl
+	 * @param b
+	 * @return
+	 */
+	static double[] solveCholesky(double[][] ldl,double[] b){
+		double[][] ldl_ = CalcTool.arrayCopy(ldl);
+		double y[] = Arrays.copyOf(b, b.length);
+		double x[] = new double[y.length];
+		/*int plus = 0;
+		int sub = 0;
+		int multi = 0;
+		int wari = 0;*/
+		for(int i = 0; i < ldl.length ;i++){
+			for(int j = 0; j < i ;j++){
+				 y[i] -= ldl_[i][j]*y[j];
+				 //multi++;
+				 //sub++;
+			}
+		}
+		for(int i = ldl.length-1;i >=0;i--){
+			x[i] = y[i]*ldl[i][i];
+			//multi++;
+			for(int j = i+1;j<ldl.length;j++){
+				x[i] -= ldl[j][i]*x[j];
+				//multi++;
+				//sub++;
+			}
+		}
+		//System.out.println(plus +" : " + sub+" : " + multi+" : " + wari);
+		return x;
+		//System.out.println(plus +" : " + sub+" : " + multi+" : " + wari);
+		//System.out.println(plus+sub+multi+wari);
+		//return y;
+	}
+	/**
+	 * 修正コレスキー分解を利用してAx=bの解であるxのベクトルを求める
+	 * @param a 方程式の係数行列
+	 * @param b 方程式の右辺項
+	 * @return 解ベクトル
+	 */
+	static double[] choleskyDecomposition(double[][] a, double[] b){
+		return solveCholesky(choleskyDecomposition(a),b);
+	}
+	/**
+	 * 修正コレスキー分解をする
+	 * @param a
+	 * @return
+	 */
+	static double[][] choleskyDecomposition(double[][] a){
+		double[][] a_ = CalcTool.arrayCopy(a);
+		double[] w= new double[a_.length];
+		for (int j = 0; j < a_.length; j++) {
+			for (int i = 0; i < j ; i++) {
+				w[i] = a_[j][i];
+				for (int k = 0; k < i ; k++) {
+					w[i] -= a_[i][k] * w[k];
+					}
+				a_[j][i] = w[i] * a_[i][i];
+				}
+			double t = a_[j][j];
+			for (int k = 0; k < j; k++) {
+				t -= a_[j][k] * w[k];
+			}
+			a_[j][j] = 1.0 / t;
+		}
+		return a_;
+	}
 	static double[] power(NumericalData data){
-		double[] old_x = Arrays.copyOf(data.getInitX(), data.getInitX().length);
-		double[] new_x;
-		double eigen_old = 0;
-		double eigen_new = 0;
-		int count = 0;
-		boolean hasEigen = false;
-		while(true){
-			double norm2 = Calc.vecNorm2(old_x);
-			for(int i = 0;i < old_x.length;i++){
-				old_x[i] /= norm2; 
+		double[] old_x = data.getInitX();
+		double[] new_x = new double[old_x.length];
+		old_x = CalcTool.normalized(old_x, Norm.TWO);
+		new_x = Calc.matVec(data.getA(), old_x);
+		int max = 0;
+		for(int i = 1; i< old_x.length;i++){
+			if(old_x[max] < old_x[i]){
+				max = i;
 			}
+		}
+		double old_eigen = new_x[max] / old_x[max];
+		old_x = CalcTool.normalized(new_x, Norm.TWO);
+		max = 0;
+		double new_eigen = 0;
+		int maxN = data.getMaxN();
+		for(int i = 1;i < maxN;i++){
 			new_x = Calc.matVec(data.getA(), old_x);
-			double maxNum = Math.abs(old_x[0]);
-			int eigenNum = 0;
-			for(int i = 1; i < old_x.length;i++){
-				if(maxNum < Math.abs(old_x[i])){
-					maxNum = Math.abs(old_x[i]);
-					eigenNum = i;
+			for(int j = 1; j < old_x.length;j++){
+				if(old_x[max] < old_x[j]){
+					max = j;
 				}
 			}
-			eigen_new = new_x[eigenNum] / old_x[eigenNum];
-			count++;
-			if(hasEigen){
-				if(Math.abs(eigen_new - eigen_old) / Math.abs(eigen_new) < data.getEps()){
-					return new_x;
-				}
-			}else{
-				hasEigen = true;
+			new_eigen = new_x[max] / old_x[max];
+			if(Math.abs(new_eigen - old_eigen)/Math.abs(new_eigen) < data.getEps()){
+				break;
+
 			}
-			eigen_old = eigen_new;
-			old_x = Arrays.copyOf(new_x, new_x.length);
-			}
+			old_x = CalcTool.normalized(new_x, Norm.TWO);
+			old_eigen = new_eigen;
+			max = 0;
+		}
+		System.out.println(new_eigen);
+		return new_x;
+	}
+	/**
+	 * 実対称行列を3重対角行列へと変換する
+	 * @param a 実対称行列
+	 * @return 3重対角行列
+	 */
+	static double[][] tridiagonalization(double a[][]){
+
+
+		return null;
 	}
 	static int sign(double x){
 		//
@@ -577,86 +683,90 @@ public class CalcNumerical{
 		double[][] a_ = CalcTool.arrayCopy(a);
 		int n = a.length-2;
 		int t = a.length-1;
-		for(int i = 0; i < n;i++){
-			int r = i+1;
+
+		double[] u_ = new double[t];
+		double[][] p_ = new double[t][t];
+		double[][] pa = new double[t][t];
+		double[][] pap = new double[t][t];
+		for(int k = 0; k < n;k++,t--){
+			//変更行列の位置
+			int r = k+1;
+			//ノルム合わせの値S
 			double s = 0;
-			for(int j =i+1;j<a.length;j++){
-				s += Math.pow(a[j][i],2);
+			for(int i = r;i<a.length;i++){
+				s += Math.pow(a[i][k],2);
 			}
 			s = Math.sqrt(s);
-			double[] u_ = new double[t];
-			for(int j = 0;j < t;j++){
-				if(j == 0){
-					u_[j] = sign(a_[r][i])*Math.sqrt((1+Math.abs(a_[r][i])/s)/2);
+			//副対角成分の値
+			double na = -sign(a_[r][k])*s;
+			//ベクトルuを定める
+			for(int i = 0;i < t;i++){
+				if(i == 0){
+					u_[i] = sign(a_[r][k])*Math.sqrt((1+Math.abs(a_[r][k])/s)/2);
 				}else{
-					u_[j] = a[r+j][i]/(2*s*Math.abs(u_[0]));
+					u_[i] = a[r+i][k]/(2*s*Math.abs(u_[0]));
 				}
 			}
-			double[][] p_ = new double[a.length][a.length];
-			for(int k = 0;k<a.length;k++){
-				for(int l = 0;l<a.length;l++){
-					if(k<=i){
-						if(k==l){
-							p_[k][l] = 1;
-						}
+			//ハウスホルダー小行列を定める
+			for(int i = 0;i < t;i++){
+				for(int j = 0;j<t;j++){
+					if(j==i){
+							p_[i][j] = 1.0-2*u_[i]*u_[j];
 					}else{
-						if(i < l){
-							if(l==k){
-								p_[k][l] = 1.0-2*u_[k-r]*u_[l-r];
-							}else{
-								p_[k][l] = -2*u_[k-r]*u_[l-r];
-							}
-						}
+							p_[i][j] = -2*u_[i]*u_[j];
 					}
 				}
 			}
-			double[][] pa =CalcTool.arrayCopy(a_);
-			double[][] tmp = Calc.multipleMat(CalcTool.copyMat(p_, r), CalcTool.copyMat(a, r));
-			//P×A
-			for(int j = 0;j<a.length;j++){
-				if(i < j){
-					for(int k = 0; k<a.length;k++){
+			//PAPの小行列を作成
+			//P*Aの積
+			for(int i = 0;i < t;i++ ){
+				for(int j = 0;j<t;j++){
+					double sum = p_[i][0]*a_[r][j+r];;
+					for(int l =1;l < t;l++){
+						sum += p_[i][l]*a_[l+r][j+r];
+					}
+					pa[i][j] = sum;
+				}
+			}
+			System.out.println("pa");
+			CalcTool.printMat(pa);
+			//PA * Pの積
+			for(int i = 0;i < t;i++ ){
+				for(int j = 0;j<t;j++){
+					double sum = 0;
+					for(int l =0;l < t;l++){
+						sum += pa[i][l]*p_[l][j];
+					}
+					pap[i][j] = sum;
+				}
+			}
+			CalcTool.printMat(pap);
+			//行列ＡにPAP小行列を差し込んでいく
+			for(int i = 0;i < a.length;i++){
+				for(int j = 0; j < a.length;j++){
+					if(i == k){
 						if(j==r){
-							if(k ==i){
-								pa[j][k] = -sign(a_[r][i])*s;
-							}else if(i < k){
-								pa[j][k] = tmp[j-r][k-r];
-							}
-						}else{
-							if(k ==i){
-								pa[j][k] = 0;
-							}else if(i < k){
-								pa[j][k] = tmp[j-r][k-r];
-							}
+							a_[i][j] = na;
+						}else if(r < j){
+							a_[i][j] = 0;
+						}
+					}else if(i==r){
+						if(j==k){
+							a_[i][j] = na;
+						}else if(r <= j){
+							a_[i][j] = pap[i-r][j-r];
+						}
+					}else if(r < i){
+						if(j==k){
+							a_[i][j] = 0;
+						}else if(r <= j){
+							a_[i][j] = pap[i-r][j-r];
 						}
 					}
 				}
 			}
-			//PA × P
-			tmp = Calc.multipleMat(CalcTool.copyMat(pa, r), CalcTool.copyMat(p_, r));
-			for(int k = 0;k<a.length;k++){
-				if(i < k){
-					for(int j = 0; j<a.length;j++){
-						if(k==r){
-							if(j ==i){
-								pa[j][k] = -sign(a_[r][i])*s;
-							}else if(i < j){
-								pa[j][k] = tmp[j-r][k-r];
-							}
-						}else{
-							if(j ==i){
-								pa[j][k] = 0;
-							}else if(i < j){
-								pa[j][k] = tmp[j-r][k-r];
-							}
-						}
-					}
-				}
-			}
-			a_ = CalcTool.arrayCopy(pa);
-			t--;
 		}
 		return a_;
 	}
-
 }
+
